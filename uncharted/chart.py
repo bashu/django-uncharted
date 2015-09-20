@@ -20,6 +20,7 @@ __all__ = [
     'amChartCursor',
     'amChartScrollbar',
     'amCoordinateChart',
+    'amRectangularChart',
 ]
 
 
@@ -617,3 +618,51 @@ class amCoordinateChart(amChart):
         return mark_safe(u'\n'.join(output))
 
 
+class amRectangularChart(amCoordinateChart):
+
+    angle = NumberField(default=0)
+    autoMarginOffset = NumberField(default=10)
+    autoMargins = BooleanField(default=True)
+    chartCursor = InstanceField(klass=amChartCursor, null=True, readonly=False, render=False)
+    chartScrollbar = InstanceField(klass=amChartScrollbar, null=True, readonly=False, render=False)
+    depth3D = NumberField(default=0)
+    marginBottom = NumberField(default=20)
+    marginLeft = NumberField(default=20)
+    marginRight = NumberField(default=20)
+    marginTop = NumberField(default=20)
+    marginsUpdated = BooleanField(default=False)
+    plotAreaGradientAngle = NumberField(default=0)
+    zoomOutButton = ObjectField(default={
+        "backgroundColor": "#b2e1ff",
+        "backgroundAlpha": 1,
+    })
+    zoomOutText = StringField(default="Show all")
+
+    def addChartCursor(self, chartCursor):
+        self.__dict__['chartCursor'] = copy.deepcopy(chartCursor)
+
+    def removeChartCursor(self):
+        raise NotImplementedError
+
+    def addChartScrollbar(self, chartScrollbar):
+        self.__dict__['chartScrollbar'] = copy.deepcopy(chartScrollbar)
+
+    def removeChartScrollbar(self):
+        raise NotImplementedError
+
+    def render(self, name, attrs=None):
+        output = [super(amRectangularChart, self).render(name, attrs)]
+
+        field = self._meta.get_field('chartCursor')
+        if field and field.has_changed(field.get_default(), getattr(self, field.attname)):
+            output.append(field.render_field(field.attname, getattr(self, field.attname)))
+            output.append("%(name)s.addChartCursor(%(chartCursor)s);" % {
+                'name': name, 'chartCursor': field.attname})
+
+        field = self._meta.get_field('chartScrollbar')
+        if field and field.has_changed(field.get_default(), getattr(self, field.attname)):
+            output.append(field.render_field(field.attname, getattr(self, field.attname)))
+            output.append("%(name)s.addChartScrollbar(%(chartScrollbar)s);" % {
+                'name': name, 'chartScrollbar': field.attname})
+
+        return mark_safe(u'\n'.join(output))
