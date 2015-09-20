@@ -416,6 +416,14 @@ class amChartCursor(amObject):
     def get_internal_type(self):
         return "ChartCursor"
 
+    def addListener(self, type, handler):
+        """Adds event listener to the object."""
+        raise NotImplementedError
+
+    def removeListener(self):
+        """Removes event listener from object."""
+        raise NotImplementedError
+    
 
 class amChartScrollbar(amObject):
 
