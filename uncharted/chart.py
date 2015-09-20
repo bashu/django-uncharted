@@ -14,6 +14,7 @@ __all__ = [
     'amCategoryAxis',
     'amBalloon',
     'amGraph',
+    'amTrendLine',
 ]
 
 
@@ -350,3 +351,36 @@ class amGraph(amObject):
 
     def get_internal_type(self):
         return 'AmGraph'
+
+
+class amTrendLine(amObject):
+    creation_counter = 0
+
+    dashLength = NumberField(default=0)
+    finalCategory = StringField()
+    finalDate = DateField()
+    finalValue = DecimalField()
+    finalXValue = DecimalField()
+    initialCategory = StringField()
+    initialDate = DateField()
+    initialValue = DecimalField()
+    initialXValue = DecimalField()
+    isProtected = BooleanField(default=False)
+    lineAlpha = DecimalField(default=1)
+    lineColor = StringField(default="#00CC00")
+    lineThickness = NumberField(default=1)
+    # valueAxis = AttributeField(attribute='attname')
+    # valueAxisX = AttributeField(attribute='attname')
+
+    def __init__(self, name='trendLine', *args, **kwargs):
+        super(amTrendLine, self).__init__(*args, **kwargs)
+        self.name = name
+
+        self.creation_counter = amTrendLine.creation_counter
+        amTrendLine.creation_counter += 1
+
+    def __cmp__(self, other):
+        return cmp(self.creation_counter, other.creation_counter)
+
+    def get_internal_type(self):
+        return 'TrendLine'
