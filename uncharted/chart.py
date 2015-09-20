@@ -162,7 +162,7 @@ class amValueAxis(amAxisBase):
     creation_counter = 0
 
     axisTitleOffset = NumberField(default=10)
-    baseCoord = NumberField(null=True, readonly=True)
+    baseCoord = NumberField(null=True, readonly=True, render=False)
     baseValue = NumberField(default=0)
     duration = StringField()
     durationUnits = ObjectField(default={"DD": "d. ", "hh": ":", "mm" :":", "ss": ""})
@@ -172,9 +172,9 @@ class amValueAxis(amAxisBase):
     integersOnly = BooleanField(default=False)
     # TODO: labelFunction 
     logarithmic = BooleanField(default=False)
-    max = DecimalField(null=True, readonly=True)
+    max = DecimalField(null=True, readonly=True, render=False)
     maximum = DecimalField()
-    min = DecimalField(null=True, readonly=True)
+    min = DecimalField(null=True, readonly=True, render=False)
     minimum = DecimalField()
     minMaxMultiplier = DecimalField(default=1)
     precision = DecimalField()
@@ -182,7 +182,7 @@ class amValueAxis(amAxisBase):
     recalculateToPercents = BooleanField(default=False)
     reversed = BooleanField(default=False)
     stackType = StringField(default="none")
-    step = NumberField(null=True, readonly=True)
+    step = NumberField(null=True, readonly=True, render=False)
     synchronizationMultiplier = DecimalField()
     totalText =	StringField()
     totalTextColor = StringField()
@@ -494,7 +494,7 @@ class amChart(amObject):
             {"number": 1e-6, "prefix": "μ"},
             {"number": 1e-3, "prefix": "m"}])
     usePrefixes = BooleanField(default=False)
-    version = StringField(readonly=True)
+    version = StringField(readonly=True, render=False)
 
     def __init__(self, name='chart', *args, **kwargs):
         super(amChart, self).__init__(*args, **kwargs)
