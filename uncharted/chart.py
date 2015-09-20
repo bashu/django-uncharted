@@ -15,6 +15,7 @@ __all__ = [
     'amBalloon',
     'amGraph',
     'amTrendLine',
+    'amChartCursor',
 ]
 
 
@@ -384,3 +385,27 @@ class amTrendLine(amObject):
 
     def get_internal_type(self):
         return 'TrendLine'
+
+
+class amChartCursor(amObject):
+
+    bulletsEnabled = BooleanField(default=False)
+    bulletSize = NumberField(default=8)
+    categoryBalloonAlpha = DecimalField(default=1)
+    categoryBalloonColor = StringField()
+    categoryBalloonDateFormat = StringField(default="MMM DD, YYYY")
+    categoryBalloonEnabled = BooleanField(default=True)
+    color = StringField(default="#FFFFFF")
+    cursorAlpha = DecimalField(default=1)
+    cursorColor = StringField(default="#CC0000")
+    cursorPosition = StringField()
+    enabled = BooleanField(default=True)
+    oneBalloonOnly = BooleanField(default=False)
+    pan = BooleanField(default=False)
+    selectionAlpha = DecimalField(default=1)
+    selectWithoutZooming = BooleanField(default=False)
+    valueBalloonsEnabled = BooleanField(default=True)
+    zoomable = BooleanField(default=True)
+
+    def get_internal_type(self):
+        return "ChartCursor"
