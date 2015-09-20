@@ -11,6 +11,7 @@ from .fields import *
 
 __all__ = [
     'amValueAxis',
+    'amCategoryAxis',
 ]
 
 
@@ -206,3 +207,31 @@ class amValueAxis(amAxisBase):
     def zoomToValues(self, startValue, endValue):
         """XY Chart only. Zooms-in the axis to the provided values."""
         raise NotImplementedError
+
+
+class amCategoryAxis(amAxisBase):
+
+    boldPeriodBeginning = BooleanField(default=True)
+    # TODO: categoryFunction
+    dateFormats = ArrayField(default=[
+        {"period": 'fff', "format": 'JJ:NN:SS'},
+        {"period": 'ss', "format": 'JJ:NN:SS'},
+        {"period": 'mm', "format": 'JJ:NN'},
+        {"period": 'hh', "format": 'JJ:NN'},
+        {"period": 'DD', "format": 'MMM DD'},
+        {"period": 'WW', "format": 'MMM DD'},
+        {"period": 'MM', "format": 'MMM'},
+        {"period": 'YYYY', "format":'YYYY'},
+    ])
+    equalSpacing = BooleanField(default=False)
+    forceShowField = StringField()
+    gridPosition = StringField(default="middle")
+    # TODO: labelFunction
+    markPeriodChange = BooleanField(default=True)
+    minPeriod = StringField(default="DD")
+    parseDates = BooleanField(default=False)
+    startOnAxis = BooleanField(default=False)
+
+    def get_internal_type(self):
+        return "CategoryAxis"
+
