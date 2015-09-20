@@ -19,8 +19,8 @@ __all__ = [
     'amTrendLine',
     'amChartCursor',
     'amChartScrollbar',
-    'amCoordinateChart',
-    'amRectangularChart',
+    'amSerialChart',
+    'amXYChart',
 ]
 
 
@@ -666,3 +666,49 @@ class amRectangularChart(amCoordinateChart):
                 'name': name, 'chartScrollbar': field.attname})
 
         return mark_safe(u'\n'.join(output))
+
+
+class amSerialChart(amRectangularChart):
+
+    categoryAxis = InstanceField(klass=amCategoryAxis, null=False, readonly=True)
+    categoryField = StringField()
+    chartData = ArrayField(readonly=True, render=False)
+    columnSpacing = NumberField(default=5)
+    columnSpacing3D = NumberField(default=0)
+    columnWidth = DecimalField(default=0.8)
+    endDate = DateField(readonly=True, render=False)
+    endIndex = NumberField(readonly=True, render=False)
+    maxSelectedSeries = NumberField()
+    maxSelectedTime = NumberField()
+    minSelectedTime = NumberField(default=0)
+    rotate = BooleanField(default=False)
+    startDate = DateField(readonly=True, render=False)
+    startIndex = NumberField(readonly=True, render=False)
+    zoomOutOnDataUpdate = BooleanField(default=True)
+
+    def get_internal_type(self):
+        return "AmSerialChart"
+
+    def zoomToCategoryValues(self, start, end):
+	"""Zooms the chart by the value of the category axis."""
+        raise NotImplementedError
+    
+    def zoomToDates(self, start, end):
+	"""Zooms the chart from one date to another."""
+        raise NotImplementedError
+        
+    def zoomToIndexes(self, start, end):
+	"""Zooms the chart by the index of the category."""
+        raise NotImplementedError
+
+
+class amXYChart(amRectangularChart):
+
+    hideXScrollbar = BooleanField(default=False)
+    hideYScrollbar = BooleanField(default=False)
+    maxZoomFactorIndex = NumberField(default=20)
+
+    def get_internal_type(self):
+        return "AmXYChart"
+
+    
