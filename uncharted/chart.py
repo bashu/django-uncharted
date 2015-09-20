@@ -13,6 +13,7 @@ __all__ = [
     'amValueAxis',
     'amCategoryAxis',
     'amBalloon',
+    'amGraph',
 ]
 
 
@@ -258,3 +259,94 @@ class amBalloon(amObject):
 
     def get_internal_type(self):
         return "AmBalloon"
+
+
+class amGraph(amObject):
+    creation_counter = 0
+
+    alphaField = StringField()
+    balloonColor = StringField()
+    balloonText = StringField(default="[[value]]")
+    # TODO: baloonFunction
+    behindColumns = BooleanField(default=False)
+    bullet = StringField(default="none")
+    bulletAlpha = DecimalField(default=1)
+    bulletBorderAlpha = DecimalField(default=1)
+    bulletBorderColor = StringField()
+    bulletBorderThickness = NumberField(default=2)
+    bulletColor = StringField()
+    bulletField = StringField()
+    bulletOffset = NumberField(default=0)
+    bulletSize = NumberField(default=8)
+    bulletSizeField = StringField()
+    closeField = StringField()
+    color = StringField()
+    colorField = StringField()
+    connect = BooleanField(default=True)
+    cornerRadiusTop = NumberField(default=0)
+    cursorBulletAlpha = DecimalField(default=1)
+    customBullet = StringField()
+    customBulletField = StringField()
+    dashLength = NumberField(default=0)
+    descriptionField = StringField()
+    fillAlphas = DecimalField(default=0)
+    fillColors = ArrayField(default=[])
+    fillColorsField = StringField()
+    # TODO: fillToGraph
+    fontSize = NumberField()
+    gradientOrientation = StringField(default="vertical")
+    hidden = BooleanField(default=False)
+    hideBulletsCount = NumberField(default=0)
+    highField = StringField()
+    includeInMinMax = BooleanField(default=True)
+    labelColorField = StringField()
+    labelPosition = StringField(default="top")
+    labelText = StringField()
+    legendAlpha = DecimalField()
+    legendColor = StringField()
+    legendValueText = StringField()
+    lineAlpha = DecimalField(default=1)
+    lineColor = StringField()
+    lineColorField = StringField()
+    lineThickness = NumberField(default=1)
+    lowField = StringField()
+    markerType = StringField()
+    maxBulletSize = NumberField(default=50)
+    minBulletSize = NumberField(default=0)
+    negativeBase = NumberField(default=0)
+    negativeFillAlphas = DecimalField()
+    negativeFillColors = ArrayField(default=[])
+    negativeLineColor = StringField()
+    numberFormatter = ObjectField(null=True)
+    openField = StringField()
+    pointPosition = StringField(default="middle")
+    showAllValueLabels = BooleanField(default=False)
+    showBalloon = BooleanField(default=True)
+    showBalloonAt = StringField(default="close")
+    showHandOnHover = BooleanField(default=False)
+    stackable = BooleanField(default=True)
+    title = StringField()
+    type = StringField(default="line")
+    urlField = StringField()
+    urlTarget = StringField()
+    valueAxis = AttributeField(attribute='attname')
+    valueField = StringField()
+    visibleInLegend = BooleanField(default=True)
+    # xAxis = AttributeField(attribute='attname')
+    xField = StringField()
+    # yAxis = AttributeField(attribute='attname')
+    yField = StringField()
+
+    def __init__(self, name='graph', unique=True, *args, **kwargs):
+        super(amGraph, self).__init__(*args, **kwargs)
+        self.name = name
+        self.unique = unique
+
+        self.creation_counter = amGraph.creation_counter
+        amGraph.creation_counter += 1
+
+    def __cmp__(self, other):
+        return cmp(self.creation_counter, other.creation_counter)
+
+    def get_internal_type(self):
+        return 'AmGraph'
