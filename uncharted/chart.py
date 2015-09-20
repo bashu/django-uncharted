@@ -16,6 +16,7 @@ __all__ = [
     'amGraph',
     'amTrendLine',
     'amChartCursor',
+    'amChartScrollbar',
 ]
 
 
@@ -409,3 +410,38 @@ class amChartCursor(amObject):
 
     def get_internal_type(self):
         return "ChartCursor"
+
+
+class amChartScrollbar(amObject):
+
+    autoGridCount = BooleanField(default=False)
+    backgroundAlpha = DecimalField(default=1)
+    backgroundColor = StringField(default="#D4D4D4")
+    color = StringField()
+    dragIconHeight = NumberField(default=18)
+    dragIconWidth = NumberField(default=11)
+    graph = AttributeField(attribute='attname')
+    graphFillAlpha = DecimalField(default=0.1)
+    graphFillColor = StringField(default="#000000")
+    graphLineAlpha = DecimalField(default=0)
+    graphLineColor = StringField(default="#000000")
+    graphType = StringField()
+    gridAlpha = DecimalField(default=0.7)
+    gridColor = StringField(default="#FFFFFF")
+    gridCount = NumberField(default=0)
+    hideResizeGrips = BooleanField(default=False)
+    maximum = DecimalField()
+    minimum = DecimalField()
+    resizeEnabled = BooleanField(default=True)
+    scrollbarHeight = NumberField(default=20)
+    scrollDuration = NumberField(default=2)
+    selectedBackgroundAlpha = DecimalField(default=1)
+    selectedBackgroundColor = StringField(default="#EFEFEF")
+    selectedGraphFillAlpha = DecimalField(default=0.5)
+    selectedGraphFillColor = StringField(default="#000000")
+    selectedGraphLineAlpha = DecimalField(default=0)
+    selectedGraphLineColor = StringField(default="#000000")
+    updateOnReleaseOnly = BooleanField(default=False)
+    
+    def get_internal_type(self):
+        return "ChartScrollbar"
