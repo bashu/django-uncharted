@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import copy
 from bisect import bisect
 from itertools import izip
 
 from django.utils.safestring import mark_safe
+from django.utils.datastructures import SortedDict
 
 from .options import Options
 from .exceptions import FieldError, ReadOnlyError
@@ -445,3 +447,106 @@ class amChartScrollbar(amObject):
     
     def get_internal_type(self):
         return "ChartScrollbar"
+
+
+class amChart(amObject):
+
+    backgroundColor = StringField(default="#FFFFFF")
+    balloon = InstanceField(klass=amBalloon, null=False, readonly=True)
+    borderAlpha = DecimalField(default=0)
+    borderColor = StringField(default="#000000")
+    color = StringField(default="#000000")
+    dataProvider = ArrayField()
+    fontFamily = StringField(default="Verdana")
+    fontSize = NumberField(default=11)
+    height = StringField(default="100%")
+    # TODO: legendDiv
+    numberFormatter = ObjectField(default={
+        "precision": -1,
+        "decimalSeparator": '.',
+        "thousandsSeparator": ',',
+    })
+    panEventsEnabled = BooleanField(default=False)
+    pathToImages = StringField()
+    percentFormatter = ObjectField(default={
+        "precision": 2,
+        "decimalSeparator": '.',
+        "thousandsSeparator": ',',
+    })
+    prefixesOfBigNumbers = ArrayField(default=[
+            {"number": 1e+3, "prefix": "k"},
+            {"number": 1e+6, "prefix": "M"},
+            {"number": 1e+9, "prefix": "G"},
+            {"number": 1e+12, "prefix": "T"},
+            {"number": 1e+15, "prefix": "P"},
+            {"number": 1e+18, "prefix": "E"},
+            {"number": 1e+21, "prefix": "Z"},
+            {"number": 1e+24, "prefix": "Y"}])
+    prefixesOfSmallNumbers = ArrayField(default=[
+            {"number": 1e-24, "prefix": "y"},
+            {"number": 1e-21, "prefix": "z"},
+            {"number": 1e-18, "prefix": "a"},
+            {"number": 1e-15, "prefix": "f"},
+            {"number": 1e-12, "prefix": "p"},
+            {"number": 1e-9, "prefix": "n"},
+            {"number": 1e-6, "prefix": "μ"},
+            {"number": 1e-3, "prefix": "m"}])
+    usePrefixes = BooleanField(default=False)
+    version = StringField(readonly=True)
+
+    def __init__(self, name='chart', *args, **kwargs):
+        super(amChart, self).__init__(*args, **kwargs)
+        self.name = name
+        self.listeners = SortedDict()
+        self.trendLines = []
+
+    def addLabel(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def clearLabels(self):
+        raise NotImplementedError
+
+    def addTitle(self, *args, **kwargs):
+        raise NotImplementedError
+
+    def addLegend(self, legend):
+        raise NotImplementedError
+
+    def removeLegend(self):
+        raise NotImplementedError
+
+    def addListener(self, type, handler):
+        try:
+            self.listeners[type].append(copy.deepcopy(handler))
+        except KeyError:
+            self.listeners[type] = [(copy.deepcopy(handler))]
+
+    def removeListener(self):
+        raise NotImplementedError
+
+    def addTrendLine(self, trendline):
+        trendline.attname = trendline.name + str(trendline.creation_counter)
+        self.trendLines.insert(bisect(self.trendLines, trendline), copy.deepcopy(trendline))
+
+    def removeTrendLine(self, index):
+        raise NotImplementedError
+
+    def render(self, name, attrs=None):
+        output = [super(amChart, self).render(name, attrs)]
+
+        # $(%(name)s).trigger('%(handler)s', [event]);
+        for t, handlers in self.listeners.items():
+            for h in handlers:
+                output.append(
+                    "%(name)s.addListener('%(type)s', function(event) {%(handler)s(event, %(name)s);})" % {
+                        'name': name,
+                        'type': t,
+                        'handler': h,
+                    })
+
+        for trendline in self.trendLines:
+            output.append(trendline.render(name=trendline.attname))
+            output.append("%(name)s.addTrendLine(%(trendline)s);" % {
+                'name': name, 'trendline': trendline.attname})
+
+        return mark_safe(u'\n'.join(output))
