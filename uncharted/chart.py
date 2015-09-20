@@ -19,6 +19,7 @@ __all__ = [
     'amTrendLine',
     'amChartCursor',
     'amChartScrollbar',
+    'amRadarChart',
     'amSerialChart',
     'amXYChart',
 ]
@@ -670,6 +671,18 @@ class amCoordinateChart(amChart):
         return mark_safe(u'\n'.join(output))
 
 
+class amRadarChart(amCoordinateChart):
+
+    marginBottom = NumberField(default=0)
+    marginLeft = NumberField(default=0)
+    marginRight = NumberField(default=0)
+    marginTop = NumberField(default=0)
+    radius = StringField(default="35%")
+
+    def get_internal_type(self):
+        return "AmRadarChart"
+
+
 class amRectangularChart(amCoordinateChart):
 
     angle = NumberField(default=0)
@@ -766,5 +779,3 @@ class amXYChart(amRectangularChart):
 
     def get_internal_type(self):
         return "AmXYChart"
-
-    
