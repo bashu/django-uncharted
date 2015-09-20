@@ -19,6 +19,7 @@ __all__ = [
     'amTrendLine',
     'amChartCursor',
     'amChartScrollbar',
+    'amCoordinateChart',
 ]
 
 
@@ -550,3 +551,69 @@ class amChart(amObject):
                 'name': name, 'trendline': trendline.attname})
 
         return mark_safe(u'\n'.join(output))
+
+
+class amCoordinateChart(amChart):
+
+    colors = ArrayField(default=[
+        "#FF6600",
+        "#FCD202",
+        "#B0DE09",
+        "#0D8ECF",
+        "#2A0CD0",
+        "#CD0D74",
+        "#CC0000",
+        "#00CC00",
+        "#0000CC",
+        "#DDDDDD",
+        "#999999",
+        "#333333",
+        "#990000",
+    ])
+    plotAreaBorderAlpha = DecimalField(default=0)
+    plotAreaBorderColor = StringField(default="#000000")
+    plotAreaFillAlphas = DecimalField(default=0)
+    plotAreaFillColors = StringField(default="#FFFFFF")
+    sequencedAnimation = BooleanField(default=True)
+    startAlpha = DecimalField(default=0)
+    startDuration = NumberField(default=0)
+    startEffect = StringField(default="elastic")
+    urlTarget = StringField(default="_self")
+
+    def __init__(self, *args, **kwargs):
+        super(amCoordinateChart, self).__init__(*args, **kwargs)
+        self.graphs = []
+        self.valueAxes = []
+
+    def addGraph(self, graph):
+        graph.attname = graph.name + str(graph.creation_counter)
+        self.graphs.insert(bisect(self.graphs, graph), copy.deepcopy(graph))
+
+    def removeGraph(self, index):
+        raise NotImplementedError
+
+    def addValueAxis(self, axis):
+        axis.attname = axis.name + str(axis.creation_counter)
+        self.valueAxes.insert(bisect(self.valueAxes, axis), copy.deepcopy(axis))
+
+    def removeValueAxis(self, index):
+        raise NotImplementedError
+
+    def render(self, name, attrs=None):
+        output = [super(amCoordinateChart, self).render(name, attrs)]
+
+        # add valueAxis
+        for axis in self.valueAxes:
+            output.append(axis.render(name=axis.attname))
+            output.append("%(name)s.addValueAxis(%(axis)s);" % {
+                'name': name, 'axis': axis.attname})
+
+        # add graphs
+        for graph in self.graphs:
+            output.append(graph.render(name=graph.attname))
+            output.append("%(name)s.addGraph(%(graph)s);" % {
+                'name': name, 'graph': graph.attname})
+
+        return mark_safe(u'\n'.join(output))
+
+
