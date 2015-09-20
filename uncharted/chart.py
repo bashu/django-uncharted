@@ -503,34 +503,73 @@ class amChart(amObject):
         self.trendLines = []
 
     def addLabel(self, *args, **kwargs):
+        """
+        Adds a label on a chart. You can use it for labeling axes, adding
+        chart title, etc. x and y coordinates can be set in number,
+        percent, or a number with ! in front of it - coordinate will
+        be calculated from right or bottom instead of left or top.
+
+        """
         raise NotImplementedError
 
     def clearLabels(self):
+        """Removes all labels added to the chart."""
         raise NotImplementedError
 
     def addTitle(self, *args, **kwargs):
+        """
+        Adds title to the top of the chart. Pie, Radar positions are updated
+        so that they won't overlap. Plot area of Serial/XY chart is also
+        updated unless autoMargins property is set to false. You can add any
+        number of titles - each of them will be placed in a new line. To
+        remove titles, simply clear titles array: chart.titles = []; and call
+        chart.validateNow() method.
+
+        """
         raise NotImplementedError
 
     def addLegend(self, legend):
+        """
+        Adds a legend to the chart. By default, you don't need to create
+        div for your legend, however if you want it to be positioned
+        in some different way, you can create div anywhere you want
+        and pass id or reference to your div as a second
+        parameter.
+
+        """
         raise NotImplementedError
 
     def removeLegend(self):
+        """Removes chart's legend."""
         raise NotImplementedError
 
     def addListener(self, type, handler):
+        """Adds event listener to the object."""
         try:
             self.listeners[type].append(copy.deepcopy(handler))
         except KeyError:
             self.listeners[type] = [(copy.deepcopy(handler))]
 
     def removeListener(self):
+        """Removes event listener from chart object."""
         raise NotImplementedError
 
     def addTrendLine(self, trendline):
+        """
+        Adds a TrendLine to a chart. You should call chart.validateNow()
+        after this method is called in order the trend line to be
+        visible.
+
+        """
         trendline.attname = trendline.name + str(trendline.creation_counter)
         self.trendLines.insert(bisect(self.trendLines, trendline), copy.deepcopy(trendline))
 
     def removeTrendLine(self, index):
+        """
+        Removes a trend line from a chart. You should call
+        chart.validateNow() in order the changes to be visible.
+
+        """
         raise NotImplementedError
 
     def render(self, name, attrs=None):
@@ -587,17 +626,30 @@ class amCoordinateChart(amChart):
         self.valueAxes = []
 
     def addGraph(self, graph):
+        """Adds a graph to the chart."""
         graph.attname = graph.name + str(graph.creation_counter)
         self.graphs.insert(bisect(self.graphs, graph), copy.deepcopy(graph))
 
     def removeGraph(self, index):
+        """Removes graph from the chart."""
         raise NotImplementedError
 
     def addValueAxis(self, axis):
+        """
+        Adds value axis to the chart. One value axis is created
+        automatically, so if you don't want to change anything or add more
+        value axes, you don't need to add it.
+
+        """
         axis.attname = axis.name + str(axis.creation_counter)
         self.valueAxes.insert(bisect(self.valueAxes, axis), copy.deepcopy(axis))
 
     def removeValueAxis(self, index):
+        """
+        Removes value axis from the chart. When you remove value axis, all
+        graphs assigned to this axis are also removed.
+
+        """
         raise NotImplementedError
 
     def render(self, name, attrs=None):
@@ -639,15 +691,19 @@ class amRectangularChart(amCoordinateChart):
     zoomOutText = StringField(default="Show all")
 
     def addChartCursor(self, chartCursor):
+        """Adds a ChartCursor object to a chart."""
         self.__dict__['chartCursor'] = copy.deepcopy(chartCursor)
 
     def removeChartCursor(self):
+        """Removes cursor from the chart."""
         raise NotImplementedError
 
     def addChartScrollbar(self, chartScrollbar):
+        """Adds a ChartScrollbar to a chart."""
         self.__dict__['chartScrollbar'] = copy.deepcopy(chartScrollbar)
 
     def removeChartScrollbar(self):
+        """Removes scrollbar from the chart."""
         raise NotImplementedError
 
     def render(self, name, attrs=None):
