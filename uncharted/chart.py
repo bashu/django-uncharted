@@ -12,6 +12,7 @@ from .fields import *
 __all__ = [
     'amValueAxis',
     'amCategoryAxis',
+    'amBalloon',
 ]
 
 
@@ -235,3 +236,25 @@ class amCategoryAxis(amAxisBase):
     def get_internal_type(self):
         return "CategoryAxis"
 
+
+class amBalloon(amObject):
+
+    adjustBorderColor = BooleanField(default=False)
+    borderAlpha = DecimalField(default=1)
+    borderColor = StringField(default="#FFFFFF")
+    borderThickness = NumberField(default=2)
+    bulletSize = NumberField(default=8)
+    color = StringField(default="#FFFFFF")
+    cornerRadius = NumberField(default=6)
+    fillAlpha = DecimalField(default=1)
+    fillColor = StringField(default="#CC0000")
+    fontSize = NumberField()
+    horizontalPadding = NumberField(default=8)
+    pointerWidth = NumberField(default=10)
+    showBullet = BooleanField(default=False)
+    textAlign = StringField(default="middle")
+    textShadowColor = StringField(default="#000000")
+    verticalPadding = NumberField(default=5)
+
+    def get_internal_type(self):
+        return "AmBalloon"
