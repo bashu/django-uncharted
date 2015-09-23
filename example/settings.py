@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
+
+    'djangobower',
 ] + PROJECT_APPS
 
 
@@ -75,4 +77,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+# Absolute path to the directory static files should be collected to.
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'static')
+
 STATIC_URL = '/static/'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
+)
+
+
+## Bower settings
+
+BOWER_COMPONENTS_ROOT = STATIC_ROOT
+BOWER_INSTALLED_APPS = [
+    'amcharts2#2.9.0',
+]
