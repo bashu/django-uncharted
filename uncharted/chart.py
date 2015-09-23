@@ -508,6 +508,7 @@ class amChart(amObject):
     def __init__(self, name='chart', *args, **kwargs):
         super(amChart, self).__init__(*args, **kwargs)
         self.name = name
+        self.titles = []
         self.listeners = SortedDict()
         self.trendLines = []
 
@@ -525,7 +526,7 @@ class amChart(amObject):
         """Removes all labels added to the chart."""
         raise NotImplementedError
 
-    def addTitle(self, *args, **kwargs):
+    def addTitle(self, text, size=13, color="#000000", alpha=1, bold=True):
         """
         Adds title to the top of the chart. Pie, Radar positions are updated
         so that they won't overlap. Plot area of Serial/XY chart is also
@@ -535,7 +536,8 @@ class amChart(amObject):
         chart.validateNow() method.
 
         """
-        raise NotImplementedError
+        self.titles.append(
+            dict(text=text, size=size, color=color, alpha=alpha, bold=bold))
 
     def addLegend(self, legend):
         """
@@ -583,6 +585,11 @@ class amChart(amObject):
 
     def render(self, name, attrs=None):
         output = [super(amChart, self).render(name, attrs)]
+
+        for t in self.titles:
+            output.append(
+                "%(name)s.addTitle('%(text)s', %(size)s, '%(color)s');" % dict(
+                    name=name, **t))
 
         # $(%(name)s).trigger('%(handler)s', [event]);
         for t, handlers in self.listeners.items():
