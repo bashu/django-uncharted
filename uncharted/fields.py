@@ -249,7 +249,7 @@ class InstanceField(Field):
     def get_default(self):
         if self.null and not self.readonly:
             return None
-        return self.klass
+        return self.klass()
 
     @property
     def klass(self):
