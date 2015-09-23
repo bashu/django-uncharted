@@ -146,7 +146,7 @@ class DecimalField(Field):
     empty_strings_allowed = False
 
     def prepare_value(self, value):
-        return dumps(round(float(value), 2))
+        return utils.dumps(round(float(value), 2))
 
     def to_python(self, value):
         if value is None:
