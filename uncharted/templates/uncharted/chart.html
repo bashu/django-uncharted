@@ -3,7 +3,7 @@
 
   {{ output }}
 
-  $(document).ready(function() {
+  document.addEventListener("DOMContentLoaded", function() {
     {% if write_to %}
       {{ chart.name }}.write("{{ write_to }}");
     {% endif %}
