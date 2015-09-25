@@ -16,6 +16,7 @@ __all__ = [
     'amCategoryAxis',
     'amBalloon',
     'amGraph',
+    'amGuide',
     'amTrendLine',
     'amChartCursor',
     'amChartScrollbar',
@@ -359,6 +360,47 @@ class amGraph(amObject):
 
     def get_internal_type(self):
         return 'AmGraph'
+
+
+class amGuide(amObject):
+    creation_counter = 0
+
+    above = BooleanField(default=False)
+    angle = NumberField()
+    balloonColor = StringField()
+    balloonText = StringField()
+    category = StringField()
+    dashLength = NumberField()
+    date = DateField()
+    fillAlpha = DecimalField()
+    fillColor =	StringField()
+    fontSize = NumberField()
+    inside = BooleanField()
+    label = StringField()
+    labelRotation = NumberField()
+    lineAlpha =	DecimalField()
+    lineColor = StringField()
+    lineThickness = NumberField()
+    position = StringField()
+    tickLength = NumberField()
+    toAngle = NumberField()
+    toCategory = StringField()
+    toDate = DateField()
+    toValue = NumberField()
+    value = NumberField()
+
+    def __init__(self, name='guide', *args, **kwargs):
+        super(amGuide, self).__init__(*args, **kwargs)
+        self.name = name
+
+        self.creation_counter = amGuide.creation_counter
+        amGuide.creation_counter += 1
+
+    def __cmp__(self, other):
+        return cmp(self.creation_counter, other.creation_counter)
+
+    def get_internal_type(self):
+        return 'Guide'
 
 
 class amTrendLine(amObject):
