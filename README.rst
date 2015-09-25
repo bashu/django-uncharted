@@ -3,7 +3,7 @@ django-uncharted
 
 This is a `Django <http://djangoproject.com>`_ integration of `amCharts <http://amcharts.com>`_
 
-Authored by `Basil Shubin <http://github.com/bashu>`_
+Authored by `Basil Shubin <http://github.com/bashu>`_, inspired by `django-chartit <https://github.com/pgollakota/django-chartit>`_
 
 .. image:: https://img.shields.io/pypi/v/django-uncharted.svg
     :target: https://pypi.python.org/pypi/django-uncharted/
