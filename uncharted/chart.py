@@ -19,6 +19,7 @@ __all__ = [
     'amTrendLine',
     'amChartCursor',
     'amChartScrollbar',
+    'amLegend',
     'amRadarChart',
     'amSerialChart',
     'amXYChart',
@@ -460,6 +461,70 @@ class amChartScrollbar(amObject):
         return "ChartScrollbar"
 
 
+class amLegend(amObject):
+
+    align = StringField(default="left")
+    autoMargins = BooleanField(default=True)
+    backgroundAlpha = DecimalField(default=0)
+    backgroundColor = StringField(default="#FFFFFF")
+    borderAlpha = DecimalField(default=0)
+    borderColor = StringField(default="#000000")
+    bottom = NumberField()
+    color = StringField()
+    data = ArrayField()
+    equalWidths = BooleanField(default=True)
+    fontSize = NumberField()
+    horizontalGap = NumberField(default=0)
+    labelText = StringField(default="[[title]]")
+    left = NumberField()
+    marginBottom = NumberField(default=0)
+    marginLeft = NumberField(default=20)
+    marginRight = NumberField(default=20)
+    marginTop = NumberField(default=0)
+    markerBorderAlpha = DecimalField(default=1)
+    markerBorderColor = StringField()
+    markerBorderThickness = NumberField(default=1)
+    markerDisabledColor = StringField()
+    markerLabelGap = NumberField(default=5)
+    markerSize = NumberField(default=16)
+    markerType = StringField(default="square")
+    maxColumns = NumberField()
+    position = StringField(default="bottom")
+    reversedOrder = BooleanField(default=False)
+    right = NumberField()
+    rollOverColor = StringField(default="#CC0000")
+    rollOverGraphAlpha = DecimalField(default=1)
+    showEntries = BooleanField(default=True)
+    spacing = NumberField(default=10)
+    switchable = BooleanField(default=True)
+    switchColor = StringField(default="#FFFFFF")
+    switchType = StringField(default="x")
+    textClickEnabled = BooleanField(default=False)
+    top = NumberField()
+    useMarkerColorForLabels = BooleanField(default=False)
+    useMarkerColorForValues = BooleanField(default=False)
+    valueAlign = StringField(default="right")
+    valueText = StringField(default="[[value]]")
+    valueWidth = NumberField(default=80)
+    verticalGap = NumberField(default=10)
+
+    def __init__(self, name='chart', *args, **kwargs):
+        super(amLegend, self).__init__(*args, **kwargs)
+        self.name = name
+        self.listeners = SortedDict()
+
+    def get_internal_type(self):
+        return "AmLegend"
+
+    def addListener(self, type, handler):
+        """Adds event listener to the object."""
+        raise NotImplementedError
+
+    def removeListener(self):
+        """Removes event listener from legend object."""
+        raise NotImplementedError
+
+
 class amChart(amObject):
 
     backgroundColor = StringField(default="#FFFFFF")
@@ -471,6 +536,7 @@ class amChart(amObject):
     fontFamily = StringField(default="Verdana")
     fontSize = NumberField(default=11)
     height = StringField(default="100%")
+    legend = InstanceField(klass=amLegend, null=True, readonly=False, render=False)
     # TODO: legendDiv
     numberFormatter = ObjectField(default={
         "precision": -1,
@@ -548,7 +614,7 @@ class amChart(amObject):
         parameter.
 
         """
-        raise NotImplementedError
+        self.__dict__['legend'] = copy.deepcopy(legend)
 
     def removeLegend(self):
         """Removes chart's legend."""
@@ -591,6 +657,12 @@ class amChart(amObject):
                 "%(name)s.addTitle('%(text)s', %(size)s, '%(color)s');" % dict(
                     name=name, **t))
 
+        field = self._meta.get_field('legend')
+        if field and field.has_changed(field.get_default(), getattr(self, field.attname)):
+            output.append(field.render_field(field.attname, getattr(self, field.attname)))
+            output.append("%(name)s.addLegend(%(legend)s);" % {
+                'name': name, 'legend': field.attname})
+    
         # $(%(name)s).trigger('%(handler)s', [event]);
         for t, handlers in self.listeners.items():
             for h in handlers:
