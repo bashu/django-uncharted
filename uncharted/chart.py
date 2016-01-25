@@ -2,7 +2,6 @@
 
 import copy
 from bisect import bisect
-from itertools import izip
 
 from django.utils.safestring import mark_safe
 from django.utils.datastructures import SortedDict
@@ -70,17 +69,17 @@ class amObject(object):
 
         fields_iter = iter(self._meta.fields)
         if not kwargs:
-            for val, field in izip(args, fields_iter):
+            for val, field in zip(args, fields_iter):
                 setattr(self, field.attname, val)
         else:
             # slower, kwargs-ready version...
-            for val, field in izip(args, fields_iter):
+            for val, field in zip(args, fields_iter):
                 setattr(self, field.attname, val)
                 kwargs.pop(field.name, None)
 
         for field in fields_iter:
             if kwargs:
-                if kwargs.has_key(field.attname) and field.readonly:
+                if field.attname in kwargs and field.readonly:
                     raise ReadOnlyError("'%s' is a read-only property of class %s" % (
                         field.name, self.__class__))
 
@@ -168,7 +167,12 @@ class amValueAxis(amAxisBase):
     baseCoord = NumberField(null=True, readonly=True, render=False)
     baseValue = NumberField(default=0)
     duration = StringField()
-    durationUnits = ObjectField(default={"DD": "d. ", "hh": ":", "mm" :":", "ss": ""})
+    durationUnits = ObjectField(default={
+        "DD": "d. ",
+        "hh": ":",
+        "mm" :":",
+        "ss": "",
+    })
     gridType = StringField(default="polygons")
     includeGuidesInMinMax = BooleanField(default=False)
     includeHidden = BooleanField(default=False)
@@ -473,6 +477,8 @@ class amChartScrollbar(amObject):
     autoGridCount = BooleanField(default=False)
     backgroundAlpha = DecimalField(default=1)
     backgroundColor = StringField(default="#D4D4D4")
+    categoryAxis = InstanceField(
+        klass=amCategoryAxis, null=False, readonly=True, render=False)
     color = StringField()
     dragIconHeight = NumberField(default=18)
     dragIconWidth = NumberField(default=11)
@@ -570,7 +576,8 @@ class amLegend(amObject):
 class amChart(amObject):
 
     backgroundColor = StringField(default="#FFFFFF")
-    balloon = InstanceField(klass=amBalloon, null=False, readonly=True)
+    balloon = InstanceField(
+        klass=amBalloon, null=False, readonly=True)
     borderAlpha = DecimalField(default=0)
     borderColor = StringField(default="#000000")
     color = StringField(default="#000000")
@@ -578,7 +585,8 @@ class amChart(amObject):
     fontFamily = StringField(default="Verdana")
     fontSize = NumberField(default=11)
     height = StringField(default="100%")
-    legend = InstanceField(klass=amLegend, null=True, readonly=False, render=False)
+    legend = InstanceField(
+        klass=amLegend, null=True, readonly=False, render=False)
     # TODO: legendDiv
     numberFormatter = ObjectField(default={
         "precision": -1,
@@ -704,7 +712,7 @@ class amChart(amObject):
             output.append(field.render_field(field.attname, getattr(self, field.attname)))
             output.append("%(name)s.addLegend(%(legend)s);" % {
                 'name': name, 'legend': field.attname})
-    
+
         # $(%(name)s).trigger('%(handler)s', [event]);
         for t, handlers in self.listeners.items():
             for h in handlers:
@@ -752,8 +760,8 @@ class amCoordinateChart(amChart):
 
     def __init__(self, *args, **kwargs):
         super(amCoordinateChart, self).__init__(*args, **kwargs)
-        self.graphs = []
         self.valueAxes = []
+        self.graphs = []
 
     def addGraph(self, graph):
         """Adds a graph to the chart."""
@@ -817,8 +825,10 @@ class amRectangularChart(amCoordinateChart):
     angle = NumberField(default=0)
     autoMarginOffset = NumberField(default=10)
     autoMargins = BooleanField(default=True)
-    chartCursor = InstanceField(klass=amChartCursor, null=True, readonly=False, render=False)
-    chartScrollbar = InstanceField(klass=amChartScrollbar, null=True, readonly=False, render=False)
+    chartCursor = InstanceField(
+        klass=amChartCursor, null=True, readonly=False, render=False)
+    chartScrollbar = InstanceField(
+        klass=amChartScrollbar, null=True, readonly=False, render=False)
     depth3D = NumberField(default=0)
     marginBottom = NumberField(default=20)
     marginLeft = NumberField(default=20)
@@ -868,7 +878,8 @@ class amRectangularChart(amCoordinateChart):
 
 class amSerialChart(amRectangularChart):
 
-    categoryAxis = InstanceField(klass=amCategoryAxis, null=False, readonly=True)
+    categoryAxis = InstanceField(
+        klass=amCategoryAxis, null=False, readonly=True, render=True)
     categoryField = StringField()
     chartData = ArrayField(readonly=True, render=False)
     columnSpacing = NumberField(default=5)

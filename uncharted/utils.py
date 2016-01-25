@@ -9,17 +9,18 @@ JSDATE_REGEX = re.compile(r'"\*\*(new Date\([0-9,]+\))"')
 
 
 def dumps(value):
-    return JSDATE_REGEX.sub(r'\1', json.dumps(value, cls=JSONDateTimeEncoder, use_decimal=True))
+    return JSDATE_REGEX.sub(r'\1', json.dumps(
+        value, cls=JSONDateTimeEncoder, use_decimal=True))
 
 
 class JSONDateTimeEncoder(json.JSONEncoder):
 
-    def default(self, obj):
-        if isinstance(obj, datetime):
+    def default(self, o):
+        if isinstance(o, datetime):
             return '**new Date(%i,%i,%i,%i,%i,%i)' % (
-                obj.year, obj.month-1, obj.day, obj.hour, obj.minute, obj.second)
+                o.year, o.month-1, o.day, o.hour, o.minute, o.second)
 
-        if isinstance(obj, date):
-            return '**new Date(%i,%i,%i)' % (obj.year, obj.month-1, obj.day)
+        if isinstance(o, date):
+            return '**new Date(%i,%i,%i)' % (o.year, o.month-1, o.day)
 
-        return json.JSONEncoder.default(self, obj)
+        return json.JSONEncoder.default(self, o)

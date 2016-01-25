@@ -17,9 +17,10 @@ class DataProvider(object):
         self.filters = filters
         self.related_fields = related_fields
         self.ordering = ordering
-        if field_mappings is None: field_mappings = []
+        if field_mappings is None:
+            field_mappings = []
         self.field_mappings = field_mappings
- 
+
         self.fields = []
         self._values = {}
 
@@ -43,12 +44,12 @@ class DataProvider(object):
                     for o in queryset:
                         related_fields = self.related_fields.get(f, {})
 
-                        if related_fields.has_key('categoryField') and related_fields.has_key('valueField'):
+                        if 'categoryField' in related_fields and 'valueField' in related_fields:
 
                             for item in DataProvider(queryset=getattr(o, f).get_query_set(),
                                                      fields=related_fields.values()):
 
-                                if self._values.has_key(item[related_fields['categoryField']]):
+                                if item[related_fields['categoryField']] in self._values:
                                     self._values[item[related_fields['categoryField']]].append(
                                         item[related_fields['valueField']])
                                 else:
