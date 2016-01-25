@@ -34,6 +34,9 @@ TEMPLATE_DIRS = (
 
 PROJECT_APPS = [
     'uncharted',
+
+    'demos',
+    'demos.area',
 ]
 
 INSTALLED_APPS = [
