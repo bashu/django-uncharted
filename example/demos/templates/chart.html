@@ -6,4 +6,9 @@
   {% render_chart chart "chartdiv" %}
 
   <div id="chartdiv" style="width:100%; height:400px;"></div>
+  <script language="javascript" type="text/javascript">
+    function zoomChart(event, chart) {
+      chart.zoomToIndexes(chart.chartData.length - 40, chart.chartData.length - 1);
+    }
+  </script>
 {% endblock %}

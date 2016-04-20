@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from random import random
+from datetime import timedelta
+
 from django.conf import settings
+from django.utils import timezone
 from django.views.generic import TemplateView
 
 from uncharted.chart import *
@@ -283,3 +287,80 @@ class AreaStacked(Area100PercentStacked):
         return context
 
 areaStacked = AreaStacked.as_view()
+
+
+class AreaWithTimeBasedData(TemplateView):
+    template_name = 'chart.html'
+
+    @property
+    def chartData(self):
+        output = []
+        d = timezone.now() - timedelta(minutes=1000)
+        for i in xrange(0, 1000):
+            d = d + timedelta(minutes=1)
+            value = int((random() * 40) + 10)
+            output.append({
+                'date': d,#.isoformat(),
+                'visits': value,
+            })
+        return output
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AreaTimeBased, self).get_context_data(*args, **kwargs)
+
+        chart = amSerialChart(
+            name='chart',
+            marginRight=30,
+            dataProvider=self.chartData,
+            categoryField="date",
+            pathToImages="%samcharts2/amcharts/images/" % settings.STATIC_URL,
+        )
+
+        chart.zoomOutButton = {
+            'backgroundColor': "#000000",
+            'backgroundAlpha': 0.15,
+        }
+
+        chart.addListener("dataUpdated", "zoomChart");
+
+        # AXES
+        # Category
+        chart.categoryAxis.parseDates = True
+        chart.categoryAxis.minPeriod = "mm"
+        chart.categoryAxis.gridAlpha = 0.07
+        chart.categoryAxis.axisColor = "#DADADA"
+
+        # Value
+        valueAxis = amValueAxis(
+            title="Unique visitors",
+            gridAlpha=0.07,
+        )
+        chart.addValueAxis(valueAxis)
+
+        # GRAPHS
+        # first graph
+        graph = amGraph(
+            type="line",
+            title="red line",
+            valueField="visits",
+            lineAlpha=1,
+            lineColor="#d1cf2a",
+            fillAlphas=0.3,  # setting fillAlphas to > 0 value makes it area graph
+        )
+        chart.addGraph(graph)
+
+        # CURSOR
+        chartCursor = amChartCursor(
+            cursorPosition="mouse",
+            categoryBalloonDateFormat="JJ:NN, DD MMMM",
+        )
+        chart.addChartCursor(chartCursor)
+
+        # SCROLLBAR
+        chartScrollbar = amChartScrollbar()
+        chart.addChartScrollbar(chartScrollbar)
+
+        context['chart'] = chart
+        return context
+
+areaWithTimeBasedData = AreaWithTimeBasedData.as_view()
