@@ -151,9 +151,14 @@ class amAxisBase(amObject):
     titleColor = StringField()
     titleFontSize = NumberField()
 
+    def __init__(self, *args, **kwargs):
+        super(amAxisBase, self).__init__(*args, **kwargs)
+        self.guides = []
+
     def addGuide(self, guide):
         """Adds guide to the axis"""
-        raise NotImplementedError
+        guide.attname = guide.name + str(guide.creation_counter)
+        self.guides.insert(bisect(self.guides, guide), copy.deepcopy(guide))
 
     def removeGuide(self, index):
         """Removes guide from the axis"""
@@ -909,6 +914,17 @@ class amSerialChart(amRectangularChart):
     def zoomToIndexes(self, start, end):
 	"""Zooms the chart by the index of the category."""
         raise NotImplementedError
+
+    def render(self, name, attrs=None):
+        output = [super(amSerialChart, self).render(name, attrs)]
+
+        field = self._meta.get_field('categoryAxis')
+        for guide in self.categoryAxis.guides:
+            output.append(guide.render(name=guide.attname))
+            output.append("%(name)s.addGuide(%(guide)s);" % {
+                'name': field.attname, 'guide': guide.attname})
+
+        return mark_safe(u'\n'.join(output))
 
 
 class amXYChart(amRectangularChart):
