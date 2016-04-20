@@ -11,7 +11,7 @@ from uncharted.chart import *
 
 
 class Area100PercentStacked(TemplateView):
-    template_name = 'chart.html'
+    template_name = 'area/chart.html'
 
     chartData = [
         {
@@ -289,8 +289,7 @@ class AreaStacked(Area100PercentStacked):
 areaStacked = AreaStacked.as_view()
 
 
-class AreaWithTimeBasedData(TemplateView):
-    template_name = 'chart.html'
+class AreaWithTimeBasedData(Area100PercentStacked):
 
     @property
     def chartData(self):
@@ -306,7 +305,7 @@ class AreaWithTimeBasedData(TemplateView):
         return output
 
     def get_context_data(self, *args, **kwargs):
-        context = super(AreaTimeBased, self).get_context_data(*args, **kwargs)
+        context = super(Area100PercentStacked, self).get_context_data(*args, **kwargs)
 
         chart = amSerialChart(
             name='chart',

@@ -37,6 +37,7 @@ PROJECT_APPS = [
 
     'demos',
     'demos.area',
+    'demos.bar',
 ]
 
 INSTALLED_APPS = [
