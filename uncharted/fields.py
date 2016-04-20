@@ -302,7 +302,8 @@ class InstanceField(Field):
         for f in iter(value._meta.fields):
             if not f.has_changed(f.get_default(), getattr(value, f.attname)):
                 continue
-            output.append(
-                f.render_field(self.attname, getattr(value, f.attname)))
+            if f.render:
+                output.append(
+                    f.render_field(self.attname, getattr(value, f.attname)))
 
         return mark_safe(u'\n'.join(output))
