@@ -4,7 +4,10 @@ import re
 import datetime
 from decimal import Decimal
 
-from django.utils import importlib
+try:
+    from django.utils import importlib
+except ImportError:
+    import importlib
 from django.utils.safestring import mark_safe
 
 from . import utils

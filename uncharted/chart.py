@@ -4,7 +4,10 @@ import copy
 from bisect import bisect
 
 from django.utils.safestring import mark_safe
-from django.utils.datastructures import SortedDict
+try:
+    from django.utils.datastructures import SortedDict
+except ImportError:
+    from collections import OrderedDict as SortedDict
 
 from .options import Options
 from .exceptions import FieldError, ReadOnlyError
