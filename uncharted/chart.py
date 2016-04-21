@@ -12,7 +12,10 @@ except ImportError:
 from . import utils
 from .options import Options
 from .exceptions import FieldError, ReadOnlyError
-from .fields import *
+from .fields import (
+    StringField, NumberField, DecimalField, DateField,
+    BooleanField, ArrayField, ObjectField,  AttributeField, InstanceField,
+)
 
 __all__ = [
     'amValueAxis',
@@ -179,14 +182,14 @@ class amValueAxis(amAxisBase):
     durationUnits = ObjectField(default={
         "DD": "d. ",
         "hh": ":",
-        "mm" :":",
+        "mm": ":",
         "ss": "",
     })
     gridType = StringField(default="polygons")
     includeGuidesInMinMax = BooleanField(default=False)
     includeHidden = BooleanField(default=False)
     integersOnly = BooleanField(default=False)
-    # TODO: labelFunction 
+    # TODO: labelFunction
     logarithmic = BooleanField(default=False)
     max = DecimalField(null=True, readonly=True, render=False)
     maximum = DecimalField()
@@ -200,13 +203,13 @@ class amValueAxis(amAxisBase):
     stackType = StringField(default="none")
     step = NumberField(null=True, readonly=True, render=False)
     synchronizationMultiplier = DecimalField()
-    totalText =	StringField()
+    totalText = StringField()
     totalTextColor = StringField()
     unit = StringField()
     unitPosition = StringField(default="right")
     usePrefixes = BooleanField(default=False)
     useScientificNotation = BooleanField(default=False)
-    
+
     def __init__(self, name='valueAxis', *args, **kwargs):
         super(amValueAxis, self).__init__(*args, **kwargs)
         self.name = name
@@ -246,7 +249,7 @@ class amCategoryAxis(amAxisBase):
         {"period": 'DD', "format": 'MMM DD'},
         {"period": 'WW', "format": 'MMM DD'},
         {"period": 'MM', "format": 'MMM'},
-        {"period": 'YYYY', "format":'YYYY'},
+        {"period": 'YYYY', "format": 'YYYY'},
     ])
     equalSpacing = BooleanField(default=False)
     forceShowField = StringField()
@@ -386,12 +389,12 @@ class amGuide(amObject):
     dashLength = NumberField()
     date = DateField()
     fillAlpha = DecimalField()
-    fillColor =	StringField()
+    fillColor = StringField()
     fontSize = NumberField()
     inside = BooleanField()
     label = StringField()
     labelRotation = NumberField()
-    lineAlpha =	DecimalField()
+    lineAlpha = DecimalField()
     lineColor = StringField()
     lineThickness = NumberField()
     position = StringField()
@@ -472,14 +475,14 @@ class amChartCursor(amObject):
     def get_internal_type(self):
         return "ChartCursor"
 
-    def addListener(self, type, handler):
+    def addListener(self, t, handler):
         """Adds event listener to the object."""
         raise NotImplementedError
 
     def removeListener(self):
         """Removes event listener from object."""
         raise NotImplementedError
-    
+
 
 class amChartScrollbar(amObject):
 
@@ -513,7 +516,7 @@ class amChartScrollbar(amObject):
     selectedGraphLineAlpha = DecimalField(default=0)
     selectedGraphLineColor = StringField(default="#000000")
     updateOnReleaseOnly = BooleanField(default=False)
-    
+
     def get_internal_type(self):
         return "ChartScrollbar"
 
@@ -573,7 +576,7 @@ class amLegend(amObject):
     def get_internal_type(self):
         return "AmLegend"
 
-    def addListener(self, type, handler):
+    def addListener(self, t, handler):
         """Adds event listener to the object."""
         raise NotImplementedError
 
@@ -683,12 +686,12 @@ class amChart(amObject):
         """Removes chart's legend."""
         raise NotImplementedError
 
-    def addListener(self, type, handler):
+    def addListener(self, t, handler):
         """Adds event listener to the object."""
         try:
-            self.listeners[type].append(copy.deepcopy(handler))
+            self.listeners[t].append(copy.deepcopy(handler))
         except KeyError:
-            self.listeners[type] = [(copy.deepcopy(handler))]
+            self.listeners[t] = [(copy.deepcopy(handler))]
 
     def removeListener(self):
         """Removes event listener from chart object."""
@@ -718,11 +721,11 @@ class amChart(amObject):
         for t in self.titles:
             output.append(
                 "%(name)s.addTitle(%(text)s, %(size)s, %(color)s);" % dict(
-                    name=name, **{k:utils.dumps(v) for k,v in t.items()}))
+                    name=name, **{k: utils.dumps(v) for k, v in t.items()}))
 
         for l in self.labels:
             output.append(
-                ("%(name)s.addLabel(%(x)s, %(y)s, %(text)s, %(align)s, %(size)s, %(color)s, %(rotation)s, %(alpha)s, %(bold)s);" % dict(name=name, **{k:utils.dumps(v) for k,v in l.items()})))
+                ("%(name)s.addLabel(%(x)s, %(y)s, %(text)s, %(align)s, %(size)s, %(color)s, %(rotation)s, %(alpha)s, %(bold)s);" % dict(name=name, **{k: utils.dumps(v) for k, v in l.items()})))
 
         field = self._meta.get_field('legend')
         if field and field.has_changed(field.get_default(), getattr(self, field.attname)):
@@ -918,7 +921,7 @@ class amSerialChart(amRectangularChart):
     def zoomToCategoryValues(self, start, end):
 	"""Zooms the chart by the value of the category axis."""
         raise NotImplementedError
-    
+
     def zoomToDates(self, start, end):
 	"""Zooms the chart from one date to another."""
         raise NotImplementedError
