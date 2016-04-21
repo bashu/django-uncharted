@@ -144,7 +144,7 @@ class amAxisBase(amObject):
     inside = BooleanField(default=False)
     labelFrequency = NumberField(default=1)
     labelRotation = NumberField(default=0)
-    labelsEnabled = BooleanField(default=False)
+    labelsEnabled = BooleanField(default=True)
     offset = NumberField(default=0)
     position = StringField()
     showFirstLabel = BooleanField(default=True)
