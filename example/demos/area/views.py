@@ -140,32 +140,35 @@ class Area100PercentStacked(TemplateView):
 
         # GRAPHS
         # first graph
-        graph = amGraph(type="line",
-                        title="Cars",
-                        valueField="cars",
-                        balloonText="[[value]] ([[percents]]%)",
-                        lineAlpha=0,
-                        fillAlphas=0.6,
+        graph = amGraph(
+            type="line",
+            title="Cars",
+            valueField="cars",
+            balloonText="[[value]] ([[percents]]%)",
+            lineAlpha=0,
+            fillAlphas=0.6,
         )
         chart.addGraph(graph)
 
         # second graph
-        graph = amGraph(type="line",
-                        title="Motorcycles",
-                        valueField="motorcycles",
-                        balloonText="[[value]] ([[percents]]%)",
-                        lineAlpha=0,
-                        fillAlphas=0.6,
+        graph = amGraph(
+            type="line",
+            title="Motorcycles",
+            valueField="motorcycles",
+            balloonText="[[value]] ([[percents]]%)",
+            elineAlpha=0,
+            fillAlphas=0.6,
         )
         chart.addGraph(graph)
 
         # third graph
-        graph = amGraph(type="line",
-                        title="Bicycles",
-                        valueField="bicycles",
-                        balloonText="[[value]] ([[percents]]%)",
-                        lineAlpha=0,
-                        fillAlphas=0.6,
+        graph = amGraph(
+            type="line",
+            title="Bicycles",
+            valueField="bicycles",
+            balloonText="[[value]] ([[percents]]%)",
+            lineAlpha=0,
+            fillAlphas=0.6,
         )
         chart.addGraph(graph)
 
@@ -186,7 +189,7 @@ area100PercentStacked = Area100PercentStacked.as_view()
 class AreaStacked(Area100PercentStacked):
 
     def get_context_data(self, *args, **kwargs):
-        context = super(Area100PercentStacked, self).get_context_data(*args, **kwargs)
+        context = super(AreaStacked, self).get_context_data(*args, **kwargs)
 
         chart = amSerialChart(
             name='chart',
@@ -305,7 +308,7 @@ class AreaWithTimeBasedData(Area100PercentStacked):
         return output
 
     def get_context_data(self, *args, **kwargs):
-        context = super(Area100PercentStacked, self).get_context_data(*args, **kwargs)
+        context = super(AreaWithTimeBasedData, self).get_context_data(*args, **kwargs)
 
         chart = amSerialChart(
             name='chart',
