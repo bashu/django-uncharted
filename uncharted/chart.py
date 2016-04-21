@@ -717,7 +717,7 @@ class amChart(amObject):
 
         for t in self.titles:
             output.append(
-                "%(name)s.addTitle('%(text)s', %(size)s, '%(color)s');" % dict(
+                "%(name)s.addTitle(%(text)s, %(size)s, %(color)s);" % dict(
                     name=name, **{k:utils.dumps(v) for k,v in t.items()}))
 
         for l in self.labels:
