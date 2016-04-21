@@ -156,7 +156,7 @@ class Area100PercentStacked(TemplateView):
             title="Motorcycles",
             valueField="motorcycles",
             balloonText="[[value]] ([[percents]]%)",
-            elineAlpha=0,
+            lineAlpha=0,
             fillAlphas=0.6,
         )
         chart.addGraph(graph)
