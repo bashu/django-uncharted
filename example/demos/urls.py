@@ -17,4 +17,5 @@ if 'demos.bar' in settings.INSTALLED_APPS:
         url(r'bar-and-line-chart-mix/$', 'barAndLineMix'),
         url(r'clustered-bar-chart/$', 'barClustered'),
         url(r'floating-bar-chart/$', 'barFloating'),
+        url(r'stacked-bar-chart/$', 'barStacked'),
     )

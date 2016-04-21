@@ -57,7 +57,6 @@ class Bar3D(TemplateView):
         chart.addValueAxis(valueAxis)
 
         # GRAPHS
-        # first graph
         graph = amGraph(
             type="column",
             title="Income",
@@ -279,7 +278,6 @@ class BarFloating(BarClustered):
         chart.addValueAxis(valueAxis)
 
         # GRAPHS
-        # first graph
         graph1 = amGraph(
             type="column",
             valueField="endTime",
@@ -295,3 +293,146 @@ class BarFloating(BarClustered):
         return context
 
 barFloating = BarFloating.as_view()
+
+
+class BarStacked(BarFloating):
+    template_name = 'bar/3d.html'
+
+    chartData = [
+        {
+            'year': "2003",
+            'europe': 2.5,
+            'namerica': 2.5,
+            'asia': 2.1,
+            'lamerica': 0.3,
+            'meast': 0.2,
+            'africa': 0.1
+        }, {
+            'year': "2004",
+            'europe': 2.6,
+            'namerica': 2.7,
+            'asia': 2.2,
+            'lamerica': 0.3,
+            'meast': 0.3,
+            'africa': 0.1
+        }, {
+            'year': "2005",
+            'europe': 2.8,
+            'namerica': 2.9,
+            'asia': 2.4,
+            'lamerica': 0.3,
+            'meast': 0.3,
+            'africa': 0.1
+        }]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BarStacked, self).get_context_data(*args, **kwargs)
+
+        chart = amSerialChart(
+            name='chart',
+            dataProvider=self.chartData,
+            categoryField="year",
+            plotAreaBorderAlpha=0.2,
+            rotate=True,
+            pathToImages="%samcharts2/amcharts/images/" % settings.STATIC_URL,
+        )
+        
+        # AXES
+        # Category
+        chart.categoryAxis.gridPosition = "start"
+        chart.categoryAxis.gridAlpha = 0.1
+        chart.categoryAxis.axisAlpha = 0
+        
+        # Value
+        valueAxis = amValueAxis(
+            axisAlpha=0,
+            gridAlpha=0.1,
+            stackType="regular",
+        )
+        chart.addValueAxis(valueAxis)
+
+        # GRAPHS
+        # first graph
+        graph1 = amGraph(
+            type="column",
+            title="Europe",
+            labelText="[[value]]",
+            valueField="europe",
+            lineAlpha=0,
+            fillAlphas=1,
+            lineColor="#C72C95",
+        )
+        chart.addGraph(graph1)
+
+        # second graph
+        graph2 = amGraph(
+            type="column",
+            title="North America",
+            labelText="[[value]]",
+            valueField="namerica",
+            lineAlpha=0,
+            fillAlphas=1,
+            lineColor="#D8E0BD",
+        )
+        chart.addGraph(graph2)
+
+        # third graph
+        graph3 = amGraph(
+            type="column",
+            title="Asia-Pacific",
+            labelText="[[value]]",
+            valueField="asia",
+            lineAlpha=0,
+            fillAlphas=1,
+            lineColor="#B3DBD4",
+        )
+        chart.addGraph(graph3)
+
+        # forth graph
+        graph4 = amGraph(
+            type="column",
+            title="Latin America",
+            labelText="[[value]]",
+            valueField="lamerica",
+            lineAlpha=0,
+            fillAlphas=1,
+            lineColor="#69A55C",
+        )
+        chart.addGraph(graph4)
+
+        # fifth graph
+        graph5 = amGraph(
+            type="column",
+            title="Middle-East",
+            labelText="[[value]]",
+            valueField="meast",
+            lineAlpha=0,
+            fillAlphas=1,
+            lineColor="#B5B8D3",
+        )
+        chart.addGraph(graph5)
+
+        # sixth graph
+        graph6 = amGraph(
+            type="column",
+            title="Africa",
+            labelText="[[value]]",
+            valueField="africa",
+            lineAlpha=0,
+            fillAlphas=1,
+            lineColor="#F4E23B",
+        )
+        chart.addGraph(graph6)
+
+        # LEGEND
+        legend = amLegend()
+        legend.position = "right"
+        legend.borderAlpha = 0.3
+        legend.horizontalGap = 10
+        legend.switchType = "v"
+        chart.addLegend(legend)
+
+        context['chart'] = chart
+        return context
+
+barStacked = BarStacked.as_view()
