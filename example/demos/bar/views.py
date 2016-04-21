@@ -436,3 +436,99 @@ class BarStacked(BarFloating):
         return context
 
 barStacked = BarStacked.as_view()
+
+
+class BarWithBackgroundImage(BarStacked):
+    template_name = 'bar/bg.html'
+
+    chartData = [
+        {
+            'country': "Czech Republic",
+            'litres': 156.90,
+            'short': "CZ"
+        }, {
+            'country': "Ireland",
+            'litres': 131.10,
+            'short': "IR"
+        }, {
+            'country': "Germany",
+            'litres': 115.80,
+            'short': "DE"
+        }, {
+            'country': "Australia",
+            'litres': 109.90,
+            'short': "AU"
+        }, {
+            'country': "Austria",
+            'litres': 108.30,
+            'short': "AT"
+        }, {
+            'country': "UK",
+            'litres': 99.00,
+            'short': "UK"
+        }, {
+            'country': "Belgium",
+            'litres': 93.00,
+            'short': "BE"
+        }]
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BarWithBackgroundImage, self).get_context_data(*args, **kwargs)
+
+        chart = amSerialChart(
+            name='chart',
+            dataProvider=self.chartData,
+            categoryField="country",
+            color="#FFFFFF",
+            rotate=True,
+            pathToImages="%samcharts2/amcharts/images/" % settings.STATIC_URL,
+        )
+
+        # this line makes the chart to show image in the background
+        chart.backgroundImage = "%simages/bg.jpg" % settings.STATIC_URL
+        
+        # sometimes we need to set margins manually
+        # autoMargins should be set to false in order chart to use custom margin values 
+        chart.autoMargins = False
+        chart.marginTop = 100
+        chart.marginLeft = 50
+        chart.marginRight = 30
+        chart.startDuration = 2
+                
+        # AXES
+        # Category
+        chart.categoryAxis.labelsEnabled = False
+        chart.categoryAxis.gridAlpha = 0
+        chart.categoryAxis.axisAlpha = 0
+        
+        # Value
+        valueAxis = amValueAxis(
+            axisAlpha=0,
+            gridAlpha=0,
+            labelsEnabled=False,
+            minimum=0,
+        )
+        chart.addValueAxis(valueAxis)
+
+        # GRAPHS
+        graph = amGraph(
+            type="column",
+            valueField="litres",
+            lineAlpha=0,
+            fillAlphas=0.5,
+            # you can pass any number of colors in array to create more fancy gradients
+            fillColors=["#000000", "#FF6600"],
+            gradientOrientation="horizontal",
+            labelPosition="bottom",
+            labelText="[[category]]: [[value]] Litres",
+            balloonText="[[category]]: [[value]] Litres",
+        )
+        chart.addGraph(graph)
+
+        # LABEL
+        chart.addLabel(50, 40, "Beer Consumption by country", "left", 15, "#000000", 0, 1, True);
+
+        context['chart'] = chart
+        return context
+
+barWithBackgroundImage = BarWithBackgroundImage.as_view()
