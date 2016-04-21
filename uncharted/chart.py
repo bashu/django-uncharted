@@ -585,6 +585,7 @@ class amLegend(amObject):
 class amChart(amObject):
 
     backgroundColor = StringField(default="#FFFFFF")
+    backgroundImage = StringField()
     balloon = InstanceField(
         klass=amBalloon, null=False, readonly=True)
     borderAlpha = DecimalField(default=0)
