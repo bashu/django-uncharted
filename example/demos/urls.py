@@ -14,4 +14,7 @@ if 'demos.area' in settings.INSTALLED_APPS:
 if 'demos.bar' in settings.INSTALLED_APPS:
     urlpatterns += patterns('demos.bar.views',
         url(r'3d-bar-chart/$', 'bar3D'),
+        url(r'bar-and-line-chart-mix/$', 'barAndLineMix'),
+        url(r'clustered-bar-chart/$', 'barClustered'),
+        url(r'floating-bar-chart/$', 'barFloating'),
     )
