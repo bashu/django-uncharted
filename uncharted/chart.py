@@ -9,6 +9,7 @@ try:
 except ImportError:
     from collections import OrderedDict as SortedDict
 
+from . import utils
 from .options import Options
 from .exceptions import FieldError, ReadOnlyError
 from .fields import *
@@ -633,10 +634,11 @@ class amChart(amObject):
         super(amChart, self).__init__(*args, **kwargs)
         self.name = name
         self.titles = []
+        self.labels = []
         self.listeners = SortedDict()
         self.trendLines = []
 
-    def addLabel(self, *args, **kwargs):
+    def addLabel(self, x, y, text, align, size, color, rotation, alpha, bold):
         """
         Adds a label on a chart. You can use it for labeling axes, adding
         chart title, etc. x and y coordinates can be set in number,
@@ -644,7 +646,9 @@ class amChart(amObject):
         be calculated from right or bottom instead of left or top.
 
         """
-        raise NotImplementedError
+        self.labels.append(dict(
+            x=x, y=y, text=text, align=align, size=size, color=color, rotation=rotation, alpha=alpha, bold=bold,
+        ))
 
     def clearLabels(self):
         """Removes all labels added to the chart."""
@@ -713,7 +717,11 @@ class amChart(amObject):
         for t in self.titles:
             output.append(
                 "%(name)s.addTitle('%(text)s', %(size)s, '%(color)s');" % dict(
-                    name=name, **t))
+                    name=name, **{k:utils.dumps(v) for k,v in t.items()}))
+
+        for l in self.labels:
+            output.append(
+                ("%(name)s.addLabel(%(x)s, %(y)s, %(text)s, %(align)s, %(size)s, %(color)s, %(rotation)s, %(alpha)s, %(bold)s);" % dict(name=name, **{k:utils.dumps(v) for k,v in l.items()})))
 
         field = self._meta.get_field('legend')
         if field and field.has_changed(field.get_default(), getattr(self, field.attname)):
