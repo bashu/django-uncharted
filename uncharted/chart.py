@@ -919,15 +919,15 @@ class amSerialChart(amRectangularChart):
         return "AmSerialChart"
 
     def zoomToCategoryValues(self, start, end):
-	"""Zooms the chart by the value of the category axis."""
+        """Zooms the chart by the value of the category axis."""
         raise NotImplementedError
 
     def zoomToDates(self, start, end):
-	"""Zooms the chart from one date to another."""
+        """Zooms the chart from one date to another."""
         raise NotImplementedError
-        
+
     def zoomToIndexes(self, start, end):
-	"""Zooms the chart by the index of the category."""
+        """Zooms the chart by the index of the category."""
         raise NotImplementedError
 
     def render(self, name, attrs=None):
