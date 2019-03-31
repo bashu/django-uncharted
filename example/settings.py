@@ -10,8 +10,8 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os, re
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -22,22 +22,14 @@ SECRET_KEY = 'YOUR_SECRET_KEY'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
+SERVE_MEDIA = True
 
 ALLOWED_HOSTS = []
-
-TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'templates'),
-)
 
 # Application definition
 
 PROJECT_APPS = [
     'uncharted',
-
-    'demos',
-    'demos.area',
-    'demos.bar',
 ]
 
 INSTALLED_APPS = [
@@ -50,6 +42,20 @@ INSTALLED_APPS = [
     'djangobower',
 ] + PROJECT_APPS
 
+if 'uncharted' in INSTALLED_APPS:
+    INSTALLED_APPS += [
+        'demos',
+    ]
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(os.path.dirname(__file__), 'templates'),
+        ],
+        'APP_DIRS': True,
+    },
+]
 
 ROOT_URLCONF = 'example.urls'
 
@@ -91,7 +97,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
 )
-
 
 ## Bower settings
 

@@ -14,9 +14,6 @@ Authored by `Basil Shubin <http://github.com/bashu>`_, inspired by `django-chart
 .. image:: https://img.shields.io/github/license/bashu/django-uncharted.svg
     :target: https://pypi.python.org/pypi/django-uncharted/
 
-.. image:: https://landscape.io/github/bashu/django-uncharted/develop/landscape.svg?style=flat
-    :target: https://landscape.io/github/bashu/django-uncharted/develop
-
 Installation
 ------------
 
@@ -26,10 +23,9 @@ You'll need to add ``uncharted`` to ``INSTALLED_APPS`` in your project's ``setti
 
 .. code-block:: python
 
-    INSTALLED_APPS = (
-        ...
+    INSTALLED_APPS += [ 
         'uncharted',
-    )
+    ]
 
 Please see ``example`` application. This application is used to
 manually test the functionalities of this package. This also serves as
