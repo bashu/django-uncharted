@@ -1,7 +1,7 @@
 django-uncharted
 ================
 
-This is a `Django <http://djangoproject.com>`_ integration of `amCharts <http://amcharts.com>`_
+This is a Django_ integration of amCharts_.
 
 Authored by `Basil Shubin <http://github.com/bashu>`_, inspired by `django-chartit <https://github.com/pgollakota/django-chartit>`_
 
@@ -37,9 +37,8 @@ versions but that is not tested.
 External dependencies
 ~~~~~~~~~~~~~~~~~~~~~
 
-* `amCharts <https://github.com/amcharts/amcharts2>`_ - This is not
-  included in the package since it is expected that in most scenarios
-  this would already be available.
+* amCharts_ - This is not included in the package since it is expected
+  that in most scenarios this would already be available.
 
 Configuration (optional)
 ------------------------
@@ -61,3 +60,6 @@ License
 -------
 
 ``django-uncharted`` is released under the MIT license.
+
+.. _django: https://djangoproject.com
+.. _amcharts: https://amcharts.com

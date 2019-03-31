@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load uncharted_tags %}
+
+{% block content %}
+  {% render_chart chart "chartdiv" %}
+
+  <div id="chartdiv" style="width: 100%; height: 400px;"></div>
+  <div style="margin: 15px 0 10px 0;">
+    <input type="radio" checked="true" name="group" id="rb1" onclick="setDepth()">2D
+    <input type="radio" name="group" id="rb2" onclick="setDepth()">3D
+  </div>
+
+  <script type="text/javascript">
+    function setDepth() {
+        if (document.getElementById("rb1").checked) {
+            chart.depth3D = 0;
+            chart.angle = 0;
+        } else {
+            chart.depth3D = 25;
+            chart.angle = 30;
+        }
+        chart.validateNow();
+    }
+  </script>
+{% endblock %}
