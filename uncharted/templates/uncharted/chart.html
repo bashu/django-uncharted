@@ -1,0 +1,11 @@
+<script language="javascript" type="text/javascript">
+  var {{ chart.name }};
+
+  {{ output }}
+
+  document.addEventListener("DOMContentLoaded", function() {
+    {% if write_to %}
+      {{ chart.name }}.write("{{ write_to }}");
+    {% endif %}
+  });
+</script>
